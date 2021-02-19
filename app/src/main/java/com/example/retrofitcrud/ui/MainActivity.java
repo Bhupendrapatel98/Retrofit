@@ -8,12 +8,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.example.retrofitcrud.Network.Constants;
+import com.example.retrofitcrud.model.Error;
+import com.example.retrofitcrud.utils.ErrorUtills;
 import com.example.retrofitcrud.Network.PostRequest;
 import com.example.retrofitcrud.Network.RetrofitClint;
 import com.example.retrofitcrud.R;
-import com.google.gson.JsonObject;
+import com.example.retrofitcrud.model.RegisterModel;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,6 +22,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
     private Button reg_btn;
     private EditText name,email,password;
 
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         reg_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+               /* String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
                 if (name.getText().toString().length() == 0) {
                     Toast.makeText(MainActivity.this, "Please Enter Name", Toast.LENGTH_SHORT).show();
                 } else if (email.getText().toString().length() == 0) {
@@ -49,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     register();
                 }
-
+*/
+                register();
             }
         });
     }
@@ -58,17 +61,23 @@ public class MainActivity extends AppCompatActivity {
 
         RetrofitClint.getRetrofit(Constants.BASE_URL)
                 .create(PostRequest.class)
-                .register(name.getText().toString(),password.getText().toString(),email.getText().toString())
-                .enqueue(new Callback<JsonObject>() {
+                .register("poooo","poooo","pooo@gmail.com","1234567","4299012456")
+                .enqueue(new Callback<RegisterModel>() {
                     @Override
-                    public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                        Log.i("dskjckbdc", "onResponse: "+response.toString());
-                        Toast.makeText(MainActivity.this, "Data insert Sucessfully", Toast.LENGTH_SHORT).show();
+                    public void onResponse(Call<RegisterModel> call, Response<RegisterModel> response) {
+                        Log.d(TAG, "onResponse: ");
+                        if (response.isSuccessful()){
+                            Toast.makeText(MainActivity.this, "sucess", Toast.LENGTH_SHORT).show();
+                        }else {
+                           Error error = ErrorUtills.parseError(response);
+                            Log.d(TAG, "onResponse: "+error.getErrors().getMessage());
+                            Toast.makeText(MainActivity.this, error.getErrors().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
-                    public void onFailure(Call<JsonObject> call, Throwable t) {
-                        Log.i("dskjckbdc", "onResponse: "+t.toString());
+                    public void onFailure(Call<RegisterModel> call, Throwable t) {
+                        Log.d(TAG, "onFailure: ");
                     }
                 });
     }
