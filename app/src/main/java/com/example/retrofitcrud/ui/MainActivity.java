@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         RetrofitClint.getRetrofit(Constants.BASE_URL)
                 .create(PostRequest.class)
-                .register("poooo","poooo","pooo@gmail.com","1234567","4299012456")
+                .register("jhgfds","poooo","pooo@gmail.com","1234567","4299012456")
                 .enqueue(new Callback<RegisterModel>() {
                     @Override
                     public void onResponse(Call<RegisterModel> call, Response<RegisterModel> response) {
@@ -69,9 +69,11 @@ public class MainActivity extends AppCompatActivity {
                         if (response.isSuccessful()){
                             Toast.makeText(MainActivity.this, "sucess", Toast.LENGTH_SHORT).show();
                         }else {
-                           Error error = ErrorUtills.parseError(response);
-                            Log.d(TAG, "onResponse: "+error.getErrors().getMessage());
-                            Toast.makeText(MainActivity.this, error.getErrors().getMessage(), Toast.LENGTH_SHORT).show();
+
+                           ErrorUtills errorUtills = new ErrorUtills(MainActivity.this);
+                           Error error = errorUtills.parseError(response);
+                            Log.d(TAG, "onResponse432: "+error.toString());
+                           //Error error = ErrorUtills.parseError(response);
                         }
                     }
 
